@@ -1,0 +1,11 @@
+/* Kayıt ekranı butonu sabit mor */
+.register-container .btn-primary {
+  background-color: #4a47a3 !important;
+  border-color: #4a47a3 !important;
+  color: white !important;
+}
+
+.register-container .btn-primary:hover {
+  background-color: #38358c !important;
+  border-color: #38358c !important;
+}

@@ -278,3 +278,12 @@
   opacity: 1;
   text-decoration: underline;
 }
+
+.login-submit-btn {
+  background: #4a47a3 !important;
+  color: white;
+}
+
+.login-submit-btn:hover {
+  background: #39357f !important;
+}
