@@ -1,0 +1,375 @@
+.calendar-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calendar-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.calendar-header-main h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #1a1a1a;
+}
+
+.calendar-header-main p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.view-select {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: #333;
+  outline: none;
+}
+
+/* Ana Düzen (Grid) */
+.calendar-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.calendar-main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Takvim Üst Kontrolleri */
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-tabs {
+  display: flex;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.view-tab {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.view-tab.active {
+  background: #4a47a3;
+  color: white;
+}
+
+.date-navigator {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  border: 1px solid #eee;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.nav-arrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.current-date {
+  font-weight: 600;
+  color: #333;
+}
+
+.btn-today {
+  background: white;
+  border: 1px solid #eee;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Takvim Izgarası */
+.calendar-grid-wrapper {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  gap: 1px;
+  background: #eee;
+  border: 1px solid #eee;
+}
+
+.time-col-header { background: white; }
+
+.day-header {
+  background: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.day-header.active {
+  color: #4a47a3;
+  font-weight: bold;
+}
+
+.active-date {
+  display: inline-block;
+  background: #4a47a3;
+  color: white;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.time-label {
+  background: white;
+  text-align: center;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #888;
+  height: 100px; /* Her saat dilimi için yüksekslik */
+}
+
+.grid-cell {
+  background: white;
+  height: 100px;
+  position: relative;
+  padding: 5px;
+}
+
+/* Etkinlik Kartları (Takvim İçindeki Bloklar) */
+.event-card {
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.event-card span {
+  font-weight: normal;
+  opacity: 0.8;
+  font-size: 10px;
+}
+
+.event-card.linkedin { background: #e6f0ff; color: #0a66c2; border-left: 3px solid #0a66c2; }
+.event-card.instagram { background: #faebf0; color: #d66685; border-left: 3px solid #d66685; }
+.event-card.twitter { background: #f0f4ff; color: #1da1f2; border-left: 3px solid #1da1f2; }
+.event-card.blog { background: #fff0e6; color: #f26d21; border-left: 3px solid #f26d21; }
+.event-card.green { background: #ebfaef; color: #2ea05b; border-left: 3px solid #2ea05b; }
+
+/* Yaklaşan İçerikler (Alt Bant) */
+.upcoming-contents {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.upcoming-contents h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.upcoming-cards {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.up-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #eee;
+  padding: 10px 15px;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.up-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.up-icon.linkedin { background: #e6f0ff; color: #0a66c2; }
+.up-icon.instagram { background: #faebf0; color: #d66685; }
+.up-icon.blog { background: #fff0e6; color: #f26d21; }
+
+.up-info strong { display: block; font-size: 13px; color: #333; }
+.up-info span { font-size: 11px; color: #888; }
+
+/* SAĞ YAN PANEL (Sidebar) */
+.calendar-sidebar {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-widget {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.widget-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+/* Yapılacaklar Listesi */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.todo-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.todo-list li.completed strong {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.todo-list strong {
+  display: block;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.todo-list span {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Hızlı İşlemler */
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-icon {
+  background: #f4f5fa;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a47a3;
+}
+
+.action-text {
+  flex: 1;
+}
+
+.action-text strong { display: block; font-size: 13px; color: #333; }
+.action-text span { font-size: 11px; color: #888; }
+
+.action-add-btn {
+  background: transparent;
+  border: none;
+  color: #4a47a3;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Bağlantılı Takvimler */
+.connected-cals {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.cal-logo {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 12px;
+  color: white;
+  background: #ea4335; /* Google Red */
+}
+
+.cal-logo.blue { background: #0078d4; } /* Outlook Blue */
+
+.cal-item strong { flex: 1; color: #333; }
+
+.status { font-weight: 600; font-size: 12px; }
+.status.connected { color: #2ea05b; }
+.status.disconnected { color: #4a47a3; cursor: pointer; }

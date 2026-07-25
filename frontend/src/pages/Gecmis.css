@@ -1,0 +1,227 @@
+.history-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Üst Kısım */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.history-header h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #1a1a1a;
+}
+
+.history-header p {
+  color: #666;
+  margin: 0;
+  font-size: 14px;
+}
+
+.history-filters {
+  display: flex;
+  gap: 12px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 250px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  margin-left: 8px;
+  width: 100%;
+  font-size: 13px;
+  color: #333;
+}
+
+.filter-select {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  outline: none;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Tablo Kartı */
+.history-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.card-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  padding: 12px 16px;
+  color: #888;
+  font-weight: 500;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+.history-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f9f9f9;
+  vertical-align: middle;
+}
+
+/* İçerik Sütunu */
+.content-col {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Dinamik Renk Sınıfları */
+.icon-box.blue { background: #e6f0ff; color: #0a66c2; }
+.icon-box.orange { background: #fff0e6; color: #f26d21; }
+.icon-box.pink { background: #faebf0; color: #d66685; }
+.icon-box.black { background: #f0f0f0; color: #1a1a1a; }
+.icon-box.yellow { background: #fff8e6; color: #f2b821; }
+.icon-box.purple { background: #f3ebff; color: #6b66d6; }
+
+.content-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.content-title {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.content-desc {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Tür Etiketi Sütunu */
+.type-badge {
+  font-size: 13px;
+  font-weight: 500;
+}
+.type-badge.blue { color: #0a66c2; }
+.type-badge.orange { color: #f26d21; }
+.type-badge.pink { color: #d66685; }
+.type-badge.black { color: #1a1a1a; }
+.type-badge.yellow { color: #d99e00; }
+.type-badge.purple { color: #6b66d6; }
+
+.date-col {
+  color: #555;
+  font-size: 13px;
+}
+
+/* Durum Etiketi Sütunu */
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+.status-badge.gray { background: #f4f5fa; color: #6b66d6; } /* Taslak */
+.status-badge.green { background: #ebfaef; color: #2ea05b; } /* Yayınlandı / Tamamlandı */
+.status-badge.blue { background: #e6f0ff; color: #0a66c2; } /* Hazır */
+
+/* İşlemler Sütunu */
+.actions-col {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  transition: background 0.2s;
+}
+
+.action-btn:hover { background: #f4f5fa; }
+
+/* Sayfalama */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.page-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.page-btn.active {
+  background: #4a47a3;
+  color: white;
+  border-color: #4a47a3;
+}
+
+.page-btn.text-btn {
+  width: auto;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  color: #888;
+}
+
+.page-btn.text-btn:hover { color: #4a47a3; }

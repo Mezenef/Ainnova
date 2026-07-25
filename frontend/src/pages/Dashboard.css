@@ -1,0 +1,156 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Banner */
+.welcome-banner {
+  background: linear-gradient(to right, #f3ebff 0%, #e6f0ff 100%);
+  border-radius: 20px;
+  padding: 30px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-text span {
+  color: #666;
+  font-weight: 500;
+}
+
+.banner-text h1 {
+  margin: 10px 0;
+  color: #1a1a1a;
+  font-size: 28px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.progress-bar {
+  background-color: #ddd;
+  height: 8px;
+  width: 200px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress {
+  background-color: #6b66d6;
+  height: 100%;
+}
+
+.new-content-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1px solid #eee;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.stat-icon.purple { background: #f0ebfa; color: #6b66d6; }
+.stat-icon.pink { background: #faebf0; color: #d66685; }
+.stat-icon.green { background: #ebfaef; color: #2ea05b; }
+
+.stat-info h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1a1a1a;
+}
+
+.stat-info p {
+  margin: 5px 0 10px;
+  color: #666;
+  font-size: 13px;
+}
+
+.trend.positive {
+  color: #2ea05b;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  background: #f4f5fa;
+  color: #2ea05b;
+  border: 1px solid #d1f0dc;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+/* --- BOŞ DURUM (EMPTY STATE) STİLLERİ --- */
+.empty-stats-container {
+  background: white;
+  border: 2px dashed #e0e0e0;
+  border-radius: 16px;
+  padding: 50px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.empty-stats-container h3 {
+  margin: 0 0 10px 0;
+  color: #1a1a1a;
+  font-size: 20px;
+}
+
+.empty-stats-container p {
+  color: #666;
+  margin: 0 0 25px 0;
+  font-size: 14px;
+  max-width: 400px;
+}
+
+.empty-state-btn {
+  border-color: #4a47a3;
+  color: #4a47a3;
+  padding: 12px 24px;
+}
+
+.empty-state-btn:hover {
+  background: #f4f5fa;
+}

@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+  --accent-color: #4a47a3;
+  --accent-saturation: 1;
+}
+
+.btn-primary {
+  background-color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  filter: saturate(var(--accent-saturation, 1));
+}
+
+.toggle-btn.active,
+.type-card.active,
+.lang-tab.active,
+.day-header.active .active-date,
+.settings-tab.active {
+  background-color: var(--accent-color) !important;
+  color: white !important;
+  filter: saturate(var(--accent-saturation, 1));
+}
+
+.check {
+  color: var(--accent-color) !important;
+  filter: saturate(var(--accent-saturation, 1));
+}
+
+[data-theme="koyu"] {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+[data-theme="koyu"] .settings-card,
+[data-theme="koyu"] .content-card,
+[data-theme="koyu"] .stat-card,
+[data-theme="koyu"] .history-card,
+[data-theme="koyu"] .sidebar-widget {
+  background-color: #1e1e1e !important;
+  color: #f0f0f0 !important;
+}

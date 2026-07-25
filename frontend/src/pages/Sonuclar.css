@@ -1,0 +1,272 @@
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Üst Yönlendirme */
+.results-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.back-link {
+  color: #4a47a3;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-outline-action {
+  background: white;
+  border: 1px solid #4a47a3;
+  color: #4a47a3;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary-action {
+  background: #4a47a3;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Başlık Alanı */
+.results-header-info h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #1a1a1a;
+}
+
+.meta-text {
+  color: #888;
+  font-size: 13px;
+  margin: 0 0 20px 0;
+}
+
+.lang-tabs {
+  display: flex;
+  background: #f4f5fa;
+  border-radius: 8px;
+  width: fit-content;
+  padding: 4px;
+  margin-bottom: 15px;
+}
+
+.lang-tab {
+  background: transparent;
+  border: none;
+  padding: 8px 30px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+}
+
+.lang-tab.active {
+  background: #4a47a3;
+  color: white;
+}
+
+.info-text {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* İçerik Kartları */
+.content-blocks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 10px;
+}
+
+.content-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.copy-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 12px;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.main-heading {
+  font-size: 20px;
+  margin: 0 0 15px 0;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.sub-heading {
+  font-size: 16px;
+  margin: 0 0 15px 0;
+  color: #1a1a1a;
+}
+
+.card-body p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+  margin: 0 0 15px 0;
+}
+
+.divider-light {
+  height: 1px;
+  background: #eee;
+  margin: 20px 0;
+}
+
+/* Temalar (Pembe ve Yeşil) */
+.pink-theme {
+  border: 1px solid #fbdce5;
+  background: #fffcfd;
+}
+.pink-theme .badge { background: #fbdce5; color: #d66685; }
+.pink-theme .section-title { color: #d66685; }
+.pink-theme .hashtags { color: #d66685; font-weight: 500; }
+.btn-pink-light {
+  background: #fbdce5;
+  color: #d66685;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.green-theme {
+  border: 1px solid #d1f0dc;
+  background: #fafffb;
+}
+.green-theme .badge { background: #d1f0dc; color: #2ea05b; }
+.green-theme .section-title { color: #2ea05b; }
+.green-theme .main-heading { color: #1a6e3b; }
+.btn-green-solid {
+  background: #2ea05b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Alt Çubuk (Bottom Bar) */
+.results-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-top: 10px;
+}
+
+.feedback-section, .share-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.feedback-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #555;
+  font-weight: 500;
+}
+
+.feedback-btn:hover { background: #f4f5fa; }
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+  font-weight: bold;
+}
+
+.icon-circle:hover { background: #f4f5fa; }
+
+.btn-copy-all {
+  background: white;
+  border: 1px solid #4a47a3;
+  color: #4a47a3;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}

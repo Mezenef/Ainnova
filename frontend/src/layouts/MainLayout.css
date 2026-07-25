@@ -1,0 +1,298 @@
+/* Dinamik Tema Değişkenleri */
+.layout-container {
+  --bg-color: #f8f9fc;
+  --sidebar-bg: #ffffff;
+  --text-main: #1a1a1a;
+  --text-muted: #666666;
+  --border-color: #eeeeee;
+  --nav-hover: #f4f5fa;
+  
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-family, 'Inter'), sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Karanlık Tema Sınıfı */
+.layout-container.dark-theme {
+  --bg-color: #121212;
+  --sidebar-bg: #1e1e1e;
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+  --border-color: #333333;
+  --nav-hover: #2d2d2d;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 30px 24px 20px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-header:hover {
+  opacity: 0.8;
+}
+
+.logo-text { color: var(--text-main); }
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 24px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.nav-item:hover {
+  background-color: var(--nav-hover);
+  color: #4a47a3;
+}
+
+.nav-item.active {
+  background-color: #f0f0fa;
+  color: #4a47a3;
+  border-left: 4px solid #4a47a3;
+  font-weight: 600;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sidebar-bottom { padding: 10px 0 24px; }
+
+.pro-upgrade-card {
+  background: linear-gradient(135deg, #6b66d6 0%, #4a47a3 100%);
+  border-radius: 16px;
+  padding: 20px;
+  color: white;
+  margin: 15px 24px 0;
+  position: relative;
+}
+
+.pro-upgrade-card h4 { margin: 10px 0 5px; font-size: 14px; }
+.pro-upgrade-card p { font-size: 12px; margin: 0; opacity: 0.8; line-height: 1.4; }
+.crown-icon { width: 24px; height: 24px; fill: #ffd700; }
+.pro-upgrade-card button {
+  position: absolute; right: 15px; bottom: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+/* Ana İçerik Sarıcısı */
+.main-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.top-navbar {
+  height: 70px;
+  min-height: 70px;
+  background-color: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  transition: all 0.3s ease;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--nav-hover);
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 350px;
+}
+
+.search-icon { width: 16px; height: 16px; stroke: var(--text-muted); stroke-width: 2; fill: none; }
+.search-bar input { border: none; background: transparent; width: 100%; margin-left: 10px; outline: none; color: var(--text-main); font-size: 13px; }
+
+.navbar-actions { display: flex; align-items: center; gap: 20px; margin-left: auto; }
+
+/* Navbar İkonları (Bildirim, Tema) */
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--text-muted);
+}
+
+.nav-action-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover .nav-action-icon { color: #4a47a3; }
+
+/* Bildirim Menüsü */
+.notification-wrapper { position: relative; }
+
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ea4335;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--sidebar-bg);
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: -10px;
+  width: 280px;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  font-size: 14px;
+}
+.dropdown-header h4 { margin: 0; color: var(--text-main); }
+
+.notification-dropdown ul { list-style: none; padding: 0; margin: 0; }
+.notification-dropdown li {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.notification-dropdown li:hover { background: var(--nav-hover); }
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  margin-top: 4px;
+}
+.dot.unread { background: #4a47a3; }
+
+/* Profil Alanı */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  color: var(--text-main);
+}
+
+.user-profile:hover { background: var(--nav-hover); }
+
+.avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.empty-avatar {
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-placeholder-icon {
+  width: 20px;
+  height: 20px;
+  stroke: #888;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.page-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+.notification-empty {
+  padding: 30px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-empty .empty-icon {
+  font-size: 24px;
+}
+
+.notification-empty p {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 0;
+}
