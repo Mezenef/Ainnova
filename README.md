@@ -127,54 +127,31 @@ Kullanıcı panelinde:
 
 # 📂 Proje Yapısı
 
+```text
 Ainnova/
 │
 ├── backend/
 │   │
 │   ├── ainnova_marketing/
-│   │   │
-│   │   ├── __init__.py
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   ├── asgi.py
 │   │   └── wsgi.py
 │   │
-│   │
 │   ├── marketing_api/
-│   │   │
-│   │   ├── migrations/
-│   │   │   └── Veritabanı migration dosyaları
-│   │   │
-│   │   ├── admin.py
-│   │   ├── apps.py
 │   │   ├── models.py
 │   │   ├── serializers.py
 │   │   ├── views.py
-│   │   ├── urls.py
-│   │   └── tests.py
-│   │
+│   │   └── urls.py
 │   │
 │   ├── manage.py
-│   ├── requirements.txt
-│   └── .env.example
-│
+│   └── requirements.txt
 │
 ├── frontend/
 │   │
-│   ├── public/
-│   │   ├── favicon.svg
-│   │   └── icons.svg
-│   │
-│   │
 │   ├── src/
-│   │   │
 │   │   ├── api/
 │   │   │   └── axios.js
-│   │   │
-│   │   ├── assets/
-│   │   │   ├── hero.png
-│   │   │   ├── react.svg
-│   │   │   └── vite.svg
 │   │   │
 │   │   ├── context/
 │   │   │   └── ThemeContext.jsx
@@ -184,48 +161,23 @@ Ainnova/
 │   │   │   └── MainLayout.css
 │   │   │
 │   │   ├── pages/
-│   │   │   │
 │   │   │   ├── Login.jsx
-│   │   │   ├── Login.css
-│   │   │   │
-│   │   │   ├── Kayit.jsx
-│   │   │   ├── Kayit.css
-│   │   │   │
 │   │   │   ├── Dashboard.jsx
-│   │   │   ├── Dashboard.css
-│   │   │   │
 │   │   │   ├── IcerikUret.jsx
-│   │   │   ├── IcerikUret.css
-│   │   │   │
 │   │   │   ├── Takvim.jsx
-│   │   │   ├── Takvim.css
-│   │   │   │
 │   │   │   ├── Gecmis.jsx
-│   │   │   ├── Gecmis.css
-│   │   │   │
 │   │   │   ├── Sonuclar.jsx
-│   │   │   ├── Sonuclar.css
-│   │   │   │
-│   │   │   ├── Ayarlar.jsx
-│   │   │   ├── Ayarlar.css
-│   │   │   │
-│   │   │   ├── Dogrulama.jsx
-│   │   │   └── Dogrulama.css
-│   │   │
+│   │   │   └── Ayarlar.jsx
 │   │   │
 │   │   ├── App.jsx
-│   │   ├── App.css
-│   │   ├── main.jsx
-│   │   └── index.css
-│   │
+│   │   └── main.jsx
 │   │
 │   ├── package.json
-│   ├── package-lock.json
 │   └── vite.config.js
-│
 │
 ├── README.md
 └── .gitignore
+```
 
 
 
