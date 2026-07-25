@@ -128,32 +128,147 @@ Kullanıcı panelinde:
 # 📂 Proje Yapısı
 
 Ainnova/
-
 │
 ├── backend/
+│   │
+│   ├── ainnova_marketing/
+│   │   │
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── asgi.py
+│   │   └── wsgi.py
+│   │
+│   │
+│   ├── marketing_api/
+│   │   │
+│   │   ├── migrations/
+│   │   │   └── Veritabanı migration dosyaları
+│   │   │
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   └── tests.py
+│   │
+│   │
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── .env.example
 │
-│ ├── ainnova_marketing/
-│ │
-│ ├── marketing_api/
-│ │
-│ ├── manage.py
-│ │
-│ └── requirements.txt
+│
+├── frontend/
+│   │
+│   ├── public/
+│   │   ├── favicon.svg
+│   │   └── icons.svg
+│   │
+│   │
+│   ├── src/
+│   │   │
+│   │   ├── api/
+│   │   │   └── axios.js
+│   │   │
+│   │   ├── assets/
+│   │   │   ├── hero.png
+│   │   │   ├── react.svg
+│   │   │   └── vite.svg
+│   │   │
+│   │   ├── context/
+│   │   │   └── ThemeContext.jsx
+│   │   │
+│   │   ├── layouts/
+│   │   │   ├── MainLayout.jsx
+│   │   │   └── MainLayout.css
+│   │   │
+│   │   ├── pages/
+│   │   │   │
+│   │   │   ├── Login.jsx
+│   │   │   ├── Login.css
+│   │   │   │
+│   │   │   ├── Kayit.jsx
+│   │   │   ├── Kayit.css
+│   │   │   │
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Dashboard.css
+│   │   │   │
+│   │   │   ├── IcerikUret.jsx
+│   │   │   ├── IcerikUret.css
+│   │   │   │
+│   │   │   ├── Takvim.jsx
+│   │   │   ├── Takvim.css
+│   │   │   │
+│   │   │   ├── Gecmis.jsx
+│   │   │   ├── Gecmis.css
+│   │   │   │
+│   │   │   ├── Sonuclar.jsx
+│   │   │   ├── Sonuclar.css
+│   │   │   │
+│   │   │   ├── Ayarlar.jsx
+│   │   │   ├── Ayarlar.css
+│   │   │   │
+│   │   │   ├── Dogrulama.jsx
+│   │   │   └── Dogrulama.css
+│   │   │
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   │
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
 │
 │
-└── frontend/
+├── README.md
+└── .gitignore
 
-   ├── src/
-   │
-   │── pages/
-   │
-   │── layouts/
-   │
-   │── context/
-   │
-   │── api/
-   │
-   └── package.json
+
+
+TEKNOLOJİLER
+
+Frontend:
+- React.js
+- Vite
+- JavaScript ES6+
+- Axios
+- React Router
+- Context API
+- Lucide React
+- CSS3
+
+
+Backend:
+- Python
+- Django 5
+- Django REST Framework
+- Simple JWT Authentication
+- SQLite Database
+- Django ORM
+
+
+
+GENEL MİMARİ
+
+
+Kullanıcı
+   |
+   |
+React Frontend
+   |
+   |
+Axios REST İletişimi
+   |
+   |
+Django Backend
+   |
+   |
+Database
+
 
 
 # 🏗️ Sistem Mimarisi
