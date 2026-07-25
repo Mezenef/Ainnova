@@ -117,11 +117,7 @@
   margin-bottom: 8px;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+
 
 .input-wrapper input {
   width: 100%;
@@ -137,17 +133,31 @@
   border-color: #4a47a3;
 }
 
-.input-icon {
-  position: absolute;
-  left: 12px;
-  color: #999;
+
+
+.input-wrapper {
+  position: relative;
 }
 
-.input-icon-right {
+.input-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.password-toggle {
   position: absolute;
-  right: 12px;
-  color: #999;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  border: none;
+  background: transparent;
   cursor: pointer;
+  
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Aksiyonlar (Beni Hatırla & Şifremi Unuttum) */
@@ -286,4 +296,33 @@
 
 .login-submit-btn:hover {
   background: #39357f !important;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  color: #777;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle:hover {
+  color: #4a47a3;
+}
+
+.input-wrapper input {
+  padding-right: 45px;
 }

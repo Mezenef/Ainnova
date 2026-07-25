@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import api from "../api/axios";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
 
@@ -255,30 +256,13 @@ const Login = () => {
 
 
 
-                <span
-
-                  className="input-icon-right"
-
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
-
-                  style={{
-                    cursor:"pointer"
-                  }}
-
-                >
-
-                  {
-                    showPassword
-                    ? "Gizle"
-                    : "Göster"
-                  }
-
-
-                </span>
-
-
+              <button
+  type="button"
+  className="password-toggle"
+  onClick={() => setShowPassword(!showPassword)}
+>
+  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+</button>
 
               </div>
 
