@@ -144,8 +144,14 @@ Ainnova/
 │   │   ├── views.py
 │   │   └── urls.py
 │   │
+│   ├── agent_service/
+│   │   ├── gemini_client.py
+│   │   ├── prompts.py
+│   │   └── schemas.py
+│   │
 │   ├── manage.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── .env (gitignore'da, repoya dahil değil)
 │
 ├── frontend/
 │   │
@@ -162,12 +168,17 @@ Ainnova/
 │   │   │
 │   │   ├── pages/
 │   │   │   ├── Login.jsx
+│   │   │   ├── Kayit.jsx
+│   │   │   ├── SifremiUnuttum.jsx
+│   │   │   ├── SifreSifirla.jsx
+│   │   │   ├── Dogrulama.jsx
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── IcerikUret.jsx
 │   │   │   ├── Takvim.jsx
 │   │   │   ├── Gecmis.jsx
 │   │   │   ├── Sonuclar.jsx
-│   │   │   └── Ayarlar.jsx
+│   │   │   ├── Ayarlar.jsx
+│   │   │   └── Yardim.jsx
 │   │   │
 │   │   ├── App.jsx
 │   │   └── main.jsx
