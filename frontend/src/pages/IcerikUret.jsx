@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './IcerikUret.css';
 import api from "../api/axios";
 
@@ -23,6 +25,8 @@ const badgeLabel = {
   hashtag: { icon: '#', text: 'Hashtag Üretici' },
 };
 
+
+
 const IcerikUret = () => {
   const [icerikTuru, setIcerikTuru] = useState('linkedin');
   const [ton, setTon] = useState('profesyonel');
@@ -37,6 +41,10 @@ const IcerikUret = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [uretilenIcerik, setUretilenIcerik] = useState(null);
+  const [hashtagListesi, setHashtagListesi] = useState([]);
+  const [duzenlemeModu, setDuzenlemeModu] = useState(false);
+  const [duzenlenmisMetin, setDuzenlenmisMetin] = useState('');
+  const [kopyalandi, setKopyalandi] = useState(false);
 
   useEffect(() => {
     const getCampaigns = async () => {
@@ -67,6 +75,7 @@ const IcerikUret = () => {
     }
     setLoading(true);
     setError(null);
+    setDuzenlemeModu(false);
     try {
       const response = await api.post("contents/", {
         campaign: selectedCampaign,
@@ -78,7 +87,10 @@ const IcerikUret = () => {
         length: uzunluk,
         scheduled_at: scheduledAt || null,
       });
-      setUretilenIcerik(response.data);
+
+      const agentResponse = await api.post(`contents/${response.data.id}/trigger-agent/`);
+      setUretilenIcerik(agentResponse.data.content);
+      setHashtagListesi(agentResponse.data.hashtags || []);
     } catch (err) {
       console.error("İçerik oluşturma hatası:", err.response?.data || err);
       setError("İçerik oluşturulamadı.");
@@ -86,6 +98,55 @@ const IcerikUret = () => {
       setLoading(false);
     }
   };
+
+  const gosterilecekMetin = () => {
+    if (icerikTuru === 'hashtag' && hashtagListesi.length > 0) {
+      return hashtagListesi.map((h) => `#${h}`).join(' ');
+    }
+    return duzenlemeModu ? duzenlenmisMetin : (uretilenIcerik?.generated_text || '');
+  };
+
+  const handleKopyala = () => {
+    navigator.clipboard.writeText(gosterilecekMetin());
+    setKopyalandi(true);
+    setTimeout(() => setKopyalandi(false), 2000);
+  };
+
+  const handleDuzenleToggle = () => {
+    if (!duzenlemeModu) {
+      setDuzenlenmisMetin(uretilenIcerik?.generated_text || '');
+    }
+    setDuzenlemeModu(!duzenlemeModu);
+  };
+
+  const handleDuzenlemeKaydet = async () => {
+    try {
+      await api.patch(`contents/${uretilenIcerik.id}/`, { generated_text: duzenlenmisMetin });
+      setUretilenIcerik({ ...uretilenIcerik, generated_text: duzenlenmisMetin });
+      setDuzenlemeModu(false);
+    } catch (err) {
+      console.error("Düzenleme kaydedilemedi:", err);
+    }
+  };
+
+  const handleIndir = async () => {
+  const metin = gosterilecekMetin();
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:600px;padding:30px;background:white;font-family:Arial,sans-serif;white-space:pre-wrap;color:#111;';
+  el.innerHTML = `<h2 style="margin-bottom:16px;">${(konu || 'Ainnova İçerik').replace(/</g, '&lt;')}</h2><div style="line-height:1.6;font-size:14px;">${metin.replace(/</g, '&lt;')}</div>`;
+  document.body.appendChild(el);
+
+  const canvas = await html2canvas(el, { scale: 2 });
+  document.body.removeChild(el);
+
+  const imgData = canvas.toDataURL('image/png');
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const imgWidth = pageWidth - 20;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  doc.save(`${(konu || 'icerik').slice(0, 30)}.pdf`);
+};
 
   return (
     <div className="page-container">
@@ -209,19 +270,40 @@ const IcerikUret = () => {
           </div>
 
           <div className="preview-content">
+            {icerikTuru === 'gorsel' && (
+              <div className="info-alert" style={{ marginBottom: '12px' }}>
+                ⚠️ Bu ajan şu an sadece metin üretebiliyor, görsel oluşturma henüz desteklenmiyor. Aşağıda metin çıktısı gösteriliyor.
+              </div>
+            )}
             {uretilenIcerik ? (
-              <p>{uretilenIcerik.generated_text || "İşleniyor, birazdan hazır olacak..."}</p>
+              duzenlemeModu ? (
+                <>
+                  <textarea
+                    value={duzenlenmisMetin}
+                    onChange={(e) => setDuzenlenmisMetin(e.target.value)}
+                    rows="8"
+                    style={{ width: '100%' }}
+                  />
+                  <button className="btn-primary" style={{ marginTop: '8px' }} onClick={handleDuzenlemeKaydet}>
+                    Kaydet
+                  </button>
+                </>
+              ) : (
+                <p>{gosterilecekMetin() || "İşleniyor, birazdan hazır olacak..."}</p>
+              )
             ) : (
               <p className="text-muted">Henüz içerik oluşturulmadı.</p>
             )}
           </div>
 
-          {uretilenIcerik && (
+          {uretilenIcerik && !duzenlemeModu && (
             <div className="preview-actions">
-              <button className="btn-action">📄 Kopyala</button>
-              <button className="btn-action">✏️ Düzenle</button>
+              <button className="btn-action" onClick={handleKopyala}>
+                {kopyalandi ? "✓ Kopyalandı" : "📄 Kopyala"}
+              </button>
+              <button className="btn-action" onClick={handleDuzenleToggle}>✏️ Düzenle</button>
               <button className="btn-action" onClick={handleGenerate}>🔄 Tekrar Oluştur</button>
-              <button className="btn-action">📥 İndir</button>
+              <button className="btn-action" onClick={handleIndir}>📥 İndir</button>
             </div>
           )}
         </div>

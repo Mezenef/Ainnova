@@ -17,6 +17,8 @@ from .serializers import (
     UserSerializer,
     NotificationPreferenceSerializer,
 )
+from agent_service.gemini_client import GeminiClient
+from agent_service.schemas import ContentGenerationRequest
 
 logger = logging.getLogger(__name__)
 
@@ -67,23 +69,77 @@ class MarketingContentViewSet(viewsets.ModelViewSet):
         content.status = "GENERATING"
         content.save()
 
-        agent_payload = {
-            "content_id": content.id,
-            "platform": content.platform,
-            "content_type": content.content_type,
-            "brand_name": content.campaign.brand.name,
-            "brand_voice": content.campaign.brand.brand_voice,
-            "target_audience": content.campaign.brand.target_audience,
-            "campaign_objective": content.campaign.objective,
+        platform_map = {
+            "LINKEDIN": "linkedin",
+            "X": "x",
+            "INSTAGRAM": "instagram",
+            "BLOG": "blog",
+            "EMAIL": "email",
+            "FACEBOOK": "instagram",
+            "GOOGLE_ADS": "blog",
+            "META_ADS": "instagram",
         }
 
-        logger.info(f"Yapay zeka ajanı tetiklendi. Payload: {agent_payload}")
+        uzunluk_talimati = {
+            "kisa": "İçerik kısa ve öz olsun (2-3 cümle).",
+            "orta": "İçerik orta uzunlukta olsun (1-2 paragraf).",
+            "uzun": "İçerik detaylı ve uzun olsun (3+ paragraf).",
+        }
+
+        brief = content.topic or ""
+        if content.extra_info:
+            brief = f"{brief}\n\n{content.extra_info}"
+        if content.length in uzunluk_talimati:
+            brief = f"{brief}\n\n{uzunluk_talimati[content.length]}"
+        if len(brief) < 10:
+            brief = f"{brief} (detay belirtilmedi, marka bilgisine göre üret)"
+
+        agent_request = ContentGenerationRequest(
+            brand_name=content.campaign.brand.name,
+            vertical=content.campaign.brand.vertical,
+            brief=brief,
+            platform=platform_map.get(content.platform, "blog"),
+            language="tr",
+            tone=content.tone or "professional",
+            target_audience=content.campaign.brand.target_audience,
+        )
+
+        try:
+            client = GeminiClient()
+            agent_response = client.generate_content(agent_request)
+        except Exception as exc:
+            content.status = "FAILED"
+            content.save()
+            logger.error(f"Ajan çağrısı başarısız: {exc}")
+            return Response(
+                {"error": f"Ajan çağrısı başarısız oldu: {exc}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        if agent_response.status == "completed" and agent_response.artifacts:
+            generated = agent_response.artifacts[0].content
+            metin_parcalari = [generated.body]
+            if generated.cta:
+                metin_parcalari.append(generated.cta)
+            if generated.hashtags:
+                metin_parcalari.append(" ".join(f"#{h}" for h in generated.hashtags))
+
+            content.generated_text = "\n\n".join(metin_parcalari)
+            content.status = "READY"
+            hashtag_listesi = generated.hashtags
+        else:
+            content.status = "FAILED"
+            hashtag_listesi = []
+            logger.error(f"Ajan üretimi başarısız: {agent_response.message}")
+
+        content.save()
 
         serializer = self.get_serializer(content)
         return Response(
             {
-                "message": "Yapay zeka ajanı başarıyla tetiklendi. İçerik üretiliyor...",
-                "content": serializer.data
+                "message": agent_response.message,
+                "content": serializer.data,
+                "hashtags": hashtag_listesi,
             },
             status=status.HTTP_200_OK
         )

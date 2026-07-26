@@ -230,6 +230,10 @@ export const ThemeProvider = ({ children }) => {
 
   };
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
 
 
   const refreshTheme = ()=>{
@@ -248,6 +252,7 @@ export const ThemeProvider = ({ children }) => {
 
         isDarkMode,
         setIsDarkMode,
+        toggleTheme,
 
         accentColor,
         setAccentColor,
