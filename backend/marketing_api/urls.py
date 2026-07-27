@@ -11,6 +11,11 @@ from .views import (
     RegisterAPIView,
     PasswordResetRequestAPIView,
     PasswordResetConfirmAPIView,
+    TOTPSetupAPIView,
+    TOTPEnableAPIView,
+    TOTPDisableAPIView,
+    TOTPLoginVerifyAPIView,
+    ActivityLogAPIView,
 )
 
 router = DefaultRouter()
@@ -27,4 +32,9 @@ urlpatterns = [
     path("register/", RegisterAPIView.as_view(), name="register"),
     path("password-reset/", PasswordResetRequestAPIView.as_view(), name="password-reset"),
     path("password-reset/confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-confirm"),
+    path("totp/setup/", TOTPSetupAPIView.as_view(), name="totp-setup"),
+    path("totp/enable/", TOTPEnableAPIView.as_view(), name="totp-enable"),
+    path("totp/disable/", TOTPDisableAPIView.as_view(), name="totp-disable"),
+    path("totp/verify-login/", TOTPLoginVerifyAPIView.as_view(), name="totp-verify-login"),
+    path("activity-logs/", ActivityLogAPIView.as_view(), name="activity-logs"),
 ]

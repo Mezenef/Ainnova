@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import BrandProfile, Campaign, MarketingContent, NotificationPreference
+from .models import BrandProfile, Campaign, MarketingContent, NotificationPreference, ActivityLog
+
+
+class ActivityLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActivityLog
+        fields = ["id", "action", "details", "ip_address", "created_at"]
+
 
 class BrandProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -93,9 +100,14 @@ class AgentCallbackSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_totp_enabled = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name", "is_totp_enabled"]
+
+    def get_is_totp_enabled(self, obj):
+        return hasattr(obj, "profile") and obj.profile.is_totp_enabled
 
 
 class NotificationPreferenceSerializer(serializers.ModelSerializer):
@@ -112,3 +124,17 @@ class NotificationPreferenceSerializer(serializers.ModelSerializer):
             "font_family",
             "color_saturation",
         ]
+
+
+class TOTPVerifySerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=8, required=True, help_text="6 haneli TOTP doğrulama kodu veya 8 haneli yedek kod")
+
+
+class TOTPDisableSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True)
+    code = serializers.CharField(max_length=8, required=True)
+
+
+class TOTPLoginVerifySerializer(serializers.Serializer):
+    pre_auth_token = serializers.CharField(required=True, help_text="İlk aşamada verilen geçici pre_auth_token")
+    code = serializers.CharField(max_length=8, required=True, help_text="6 haneli TOTP doğrulama kodu veya yedek kod")
