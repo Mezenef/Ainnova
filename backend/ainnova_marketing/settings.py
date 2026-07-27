@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
     "marketing_api",
 ]
 
@@ -151,7 +152,24 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "30/minute",
+        "user": "120/minute",
+    },
 }
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Ainnova Content Studio API",
+    "DESCRIPTION": "Ainnova Dijital Pazarlama ve Yapay Zeka Ajan Platformu REST API Dokümantasyonu (TOTP 2FA ve JWT Entegreli)",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+
 
 # SimpleJWT Configuration
 from datetime import timedelta
