@@ -4,53 +4,47 @@ import './MainLayout.css';
 import { useTheme } from '../context/ThemeContext';
 import api from "../api/axios";
 
-
 const MainLayout = ({ children }) => {
   const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false); // Yeni açılır profil menüsü state'i
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!(localStorage.getItem("access") || sessionStorage.getItem("access")));
-const [user, setUser] = useState({ name: '' });
+  const [user, setUser] = useState({ name: '', email: '' });
 
-useEffect(() => {
-  const token = localStorage.getItem("access") || sessionStorage.getItem("access");
-  setIsLoggedIn(!!token);
-  if (token) {
-    api.get("me/")
-      .then((res) => {
-        const adSoyad = `${res.data.first_name || ''} ${res.data.last_name || ''}`.trim();
-        setUser({ name: adSoyad || res.data.username });
-      })
-      .catch((err) => console.error("Kullanıcı bilgisi alınamadı:", err));
-  }
-}, []);
+  useEffect(() => {
+    const token = localStorage.getItem("access") || sessionStorage.getItem("access");
+    setIsLoggedIn(!!token);
+    if (token) {
+      api.get("me/")
+        .then((res) => {
+          const adSoyad = `${res.data.first_name || ''} ${res.data.last_name || ''}`.trim();
+          setUser({ 
+            name: adSoyad || res.data.username,
+            email: res.data.email || 'Kullanıcı'
+          });
+        })
+        .catch((err) => console.error("Kullanıcı bilgisi alınamadı:", err));
+    }
+  }, []);
+
   const { isDarkMode, toggleTheme } = useTheme();
 
-  const handleProfileClick = () => {
-    if (isLoggedIn) {
-      navigate('/ayarlar');
-    } else {
-      navigate('/login');
-    }
-  };
-
   const handleLogout = () => {
-  localStorage.removeItem("access");
-  localStorage.removeItem("refresh");
-  sessionStorage.removeItem("access");
-  sessionStorage.removeItem("refresh");
-  navigate("/login");
-};
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    sessionStorage.removeItem("access");
+    sessionStorage.removeItem("refresh");
+    navigate("/login");
+  };
 
   return (
     <div className={`layout-container ${isDarkMode ? 'dark-theme' : ''}`}>
-      <aside className="sidebar">
-        <div
-          className="sidebar-header"
-          onClick={() => navigate('/dashboard')}
-        >
+      <aside className={`sidebar ${!isSidebarOpen ? 'collapsed' : ''}`}>
+        <div className="sidebar-header" onClick={() => navigate('/dashboard')}>
           <div className="logo-icon-small">A</div>
           <span className="logo-text"><strong>Ainnova</strong><br/>Content Studio</span>
         </div>
@@ -58,77 +52,65 @@ useEffect(() => {
         <nav className="sidebar-nav">
           <NavLink to="/dashboard" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span>Dashboard</span>
+            <span className="nav-text">Dashboard</span>
           </NavLink>
 
           <NavLink to="/uret" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span>İçerik Üret</span>
+            <span className="nav-text">İçerik Üret</span>
           </NavLink>
 
           <NavLink to="/gecmis" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span>Sonuçlarım</span>
+            <span className="nav-text">Sonuçlarım</span>
           </NavLink>
 
           <NavLink to="/takvim" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span>Takvim</span>
+            <span className="nav-text">Takvim</span>
           </NavLink>
 
           <NavLink to="/ayarlar" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            <span>Ayarlar</span>
+            <span className="nav-text">Ayarlar</span>
           </NavLink>
         </nav>
 
         <div className="sidebar-bottom">
           <NavLink to="/yardim" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
             <svg viewBox="0 0 24 24" className="nav-icon"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            <span>Yardım</span>
+            <span className="nav-text">Yardım</span>
           </NavLink>
-          <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
-            <svg viewBox="0 0 24 24" className="nav-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            <span>Çıkış Yap</span>
-          </a>
-
-          <div className="pro-upgrade-card">
-            <svg viewBox="0 0 24 24" className="crown-icon"><path d="M2 4h20v2H2z"></path><path d="M2 8l4 12h12l4-12-6 4-4-6-4 6z"></path></svg>
-            <h4>Upgrade to Pro</h4>
-            <p>Daha fazla özellikle üretkenliğini artır.</p>
-            <button>→</button>
-          </div>
         </div>
       </aside>
 
       <div className="main-content-wrapper">
         <header className="top-navbar">
-          
+          <div className="navbar-left">
+            <button className="icon-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              <svg viewBox="0 0 24 24" className="nav-action-icon"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+          </div>
 
           <div className="navbar-actions">
-
             <div className="notification-wrapper">
               <button className="icon-btn" onClick={() => setShowNotifications(!showNotifications)}>
                 <svg viewBox="0 0 24 24" className="nav-action-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-
                 {isLoggedIn && notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
               </button>
 
               {showNotifications && (
                 <div className="notification-dropdown">
-                  <div className="dropdown-header">
-                    <h4>Bildirimler</h4>
-                  </div>
-
+                  <div className="dropdown-header"><h4>Bildirimler</h4></div>
                   {!isLoggedIn ? (
                     <div className="notification-empty">
-                      <span className="empty-icon">🔒</span>
+                      <svg viewBox="0 0 24 24" className="empty-svg-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                       <p>Bildirimleri görmek için giriş yapın.</p>
                       <button onClick={() => navigate('/login')} className="btn-text-action">Giriş Yap →</button>
                     </div>
                   ) : notifications.length === 0 ? (
                     <div className="notification-empty">
-                      <span className="empty-icon">📭</span>
+                      <svg viewBox="0 0 24 24" className="empty-svg-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                       <p>Henüz bildirim yok.</p>
                     </div>
                   ) : (
@@ -153,21 +135,46 @@ useEffect(() => {
               )}
             </button>
 
-            <div className="user-profile" onClick={handleProfileClick}>
-              {isLoggedIn ? (
-                <>
-                  <div className="avatar-img empty-avatar">
-                    <svg viewBox="0 0 24 24" className="user-placeholder-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            {/* Yeni Profil Bloğu */}
+            <div className="profile-wrapper">
+              <button className="icon-btn profile-trigger" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+                <div className="avatar-img empty-avatar">
+                  <svg viewBox="0 0 24 24" className="user-placeholder-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+              </button>
+
+              {showProfileMenu && (
+                <div className="profile-dropdown-block">
+                  <div className="profile-dropdown-header">
+                    <div className="avatar-large-dropdown empty-avatar">
+                      <svg viewBox="0 0 24 24" className="user-placeholder-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div className="profile-info-block">
+                      <h4>{isLoggedIn ? user.name : "Misafir Kullanıcı"}</h4>
+                      <p>{isLoggedIn ? user.email : "Giriş Yapılmadı"}</p>
+                    </div>
                   </div>
-                  <span className="profile-name">{user.name} ⌄</span>
-                </>
-              ) : (
-                <>
-                  <div className="avatar-img empty-avatar">
-                    <svg viewBox="0 0 24 24" className="user-placeholder-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  
+                  <div className="profile-dropdown-body">
+                    {isLoggedIn ? (
+                      <>
+                        <button onClick={() => { navigate('/ayarlar'); setShowProfileMenu(false); }} className="profile-menu-item">
+                          <svg viewBox="0 0 24 24" className="menu-item-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                          Hesap Ayarları
+                        </button>
+                        <button onClick={() => { handleLogout(); setShowProfileMenu(false); }} className="profile-menu-item logout-item">
+                          <svg viewBox="0 0 24 24" className="menu-item-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                          Çıkış Yap
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => { navigate('/login'); setShowProfileMenu(false); }} className="profile-menu-item login-item">
+                        <svg viewBox="0 0 24 24" className="menu-item-icon"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        Giriş Yap
+                      </button>
+                    )}
                   </div>
-                  <span className="profile-name">Giriş Yap</span>
-                </>
+                </div>
               )}
             </div>
 

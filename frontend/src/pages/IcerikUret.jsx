@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import './IcerikUret.css';
@@ -25,19 +25,17 @@ const badgeLabel = {
   hashtag: { icon: '#', text: 'Hashtag Üretici' },
 };
 
-
-
 const IcerikUret = () => {
+  // Aleyna'nın backend için ihtiyaç duyduğu state'ler
+  const [konu, setKonu] = useState(''); 
   const [icerikTuru, setIcerikTuru] = useState('linkedin');
   const [ton, setTon] = useState('profesyonel');
-  const [uzunluk, setUzunluk] = useState('orta');
-  const [konu, setKonu] = useState('');
-  const [ekBilgi, setEkBilgi] = useState('');
-  const [scheduledAt, setScheduledAt] = useState('');
-
-  const [campaigns, setCampaigns] = useState([]);
+  const [uzunluk, setUzunluk] = useState('kisa');
   const [selectedCampaign, setSelectedCampaign] = useState('');
-
+  const [campaigns, setCampaigns] = useState([]);
+  
+  // UI State'leri
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [uretilenIcerik, setUretilenIcerik] = useState(null);
@@ -45,7 +43,10 @@ const IcerikUret = () => {
   const [duzenlemeModu, setDuzenlemeModu] = useState(false);
   const [duzenlenmisMetin, setDuzenlenmisMetin] = useState('');
   const [kopyalandi, setKopyalandi] = useState(false);
+  
+  const menuRef = useRef(null);
 
+  // Kampanyaları Getir (Arka planda otomatik ilkini seçer, menüde gösterilmez)
   useEffect(() => {
     const getCampaigns = async () => {
       try {
@@ -61,31 +62,43 @@ const IcerikUret = () => {
     getCampaigns();
   }, []);
 
-  const secilenKampanya = campaigns.find((c) => String(c.id) === String(selectedCampaign));
-  const markaAdi = secilenKampanya?.brand_detail?.name || "Marka seçilmedi";
+  // Menü dışına tıklanınca kapatma
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
+  // Aleyna'nın API Gönderim Mantığı
   const handleGenerate = async () => {
     if (!konu.trim()) {
-      setError("Konu alanı zorunlu.");
+      setError("Lütfen ne hakkında yazmak istediğinizi belirtin.");
       return;
     }
     if (!selectedCampaign) {
-      setError("Lütfen bir kampanya seçin.");
+      setError("Arka planda kullanılabilecek aktif bir kampanya bulunamadı.");
       return;
     }
+    
     setLoading(true);
     setError(null);
     setDuzenlemeModu(false);
+    setIsMenuOpen(false); // Menüyü kapat
+    
     try {
       const response = await api.post("contents/", {
         campaign: selectedCampaign,
         platform: platformMap[icerikTuru],
         content_type: contentTypeMap[icerikTuru],
         topic: konu,
-        extra_info: ekBilgi,
+        extra_info: "", 
         tone: ton,
         length: uzunluk,
-        scheduled_at: scheduledAt || null,
+        scheduled_at: null, 
       });
 
       const agentResponse = await api.post(`contents/${response.data.id}/trigger-agent/`);
@@ -93,7 +106,7 @@ const IcerikUret = () => {
       setHashtagListesi(agentResponse.data.hashtags || []);
     } catch (err) {
       console.error("İçerik oluşturma hatası:", err.response?.data || err);
-      setError("İçerik oluşturulamadı.");
+      setError("İçerik oluşturulamadı. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }
@@ -130,183 +143,167 @@ const IcerikUret = () => {
   };
 
   const handleIndir = async () => {
-  const metin = gosterilecekMetin();
-  const el = document.createElement('div');
-  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:600px;padding:30px;background:white;font-family:Arial,sans-serif;white-space:pre-wrap;color:#111;';
-  el.innerHTML = `<h2 style="margin-bottom:16px;">${(konu || 'Ainnova İçerik').replace(/</g, '&lt;')}</h2><div style="line-height:1.6;font-size:14px;">${metin.replace(/</g, '&lt;')}</div>`;
-  document.body.appendChild(el);
+    const metin = gosterilecekMetin();
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:600px;padding:30px;background:white;font-family:Arial,sans-serif;white-space:pre-wrap;color:#111;';
+    el.innerHTML = `<h2 style="margin-bottom:16px;">${(konu || 'Ainnova İçerik').replace(/</g, '&lt;')}</h2><div style="line-height:1.6;font-size:14px;">${metin.replace(/</g, '&lt;')}</div>`;
+    document.body.appendChild(el);
 
-  const canvas = await html2canvas(el, { scale: 2 });
-  document.body.removeChild(el);
+    const canvas = await html2canvas(el, { scale: 2 });
+    document.body.removeChild(el);
 
-  const imgData = canvas.toDataURL('image/png');
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const imgWidth = pageWidth - 20;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-  doc.save(`${(konu || 'icerik').slice(0, 30)}.pdf`);
-};
+    const imgData = canvas.toDataURL('image/png');
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const imgWidth = pageWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    doc.save(`${(konu || 'icerik').slice(0, 30)}.pdf`);
+  };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1>İçeriği Oluştur</h1>
-        <p>İhtiyacınıza uygun içerik türünü seçin, detayları girin ve saniyeler içinde içeriğinizi oluşturun.</p>
-        <div className="brand-selector">
-          <span className="brand-dot">🟢</span> Marka Rehberi
-          <strong>{markaAdi}</strong>
-        </div>
+    <div className="icerik-uret-container">
+      
+      {/* Ana Ekran / Sonuç Ekranı */}
+      <div className="icerik-main">
+        {!uretilenIcerik && !loading ? (
+          <div className="welcome-screen">
+            <h2>Hoşgeldin, üretmeye başla! ✨</h2>
+            <p>Ne hakkında yazmak istersin? Aşağıya birkaç kelime bırak.</p>
+            {error && <p className="error-text-center">{error}</p>}
+          </div>
+        ) : (
+          <div className="result-screen">
+             {loading ? (
+               <div className="loader-container">
+                 <div className="loader"></div>
+                 <p>Yapay zeka içeriğinizi oluşturuyor...</p>
+               </div>
+             ) : (
+               <>
+                 <div className="preview-header">
+                    <h3>✨ Oluşturulan İçerik</h3>
+                    <span className="platform-badge linkedin">
+                      {badgeLabel[icerikTuru].icon} {badgeLabel[icerikTuru].text}
+                    </span>
+                 </div>
+                 
+                 <div className="preview-content">
+                    {icerikTuru === 'gorsel' && (
+                      <div className="info-alert">
+                        ⚠️ Görsel oluşturma henüz desteklenmiyor. Metin çıktısı gösteriliyor.
+                      </div>
+                    )}
+                    
+                    {duzenlemeModu ? (
+                      <>
+                        <textarea
+                          className="edit-textarea"
+                          value={duzenlenmisMetin}
+                          onChange={(e) => setDuzenlenmisMetin(e.target.value)}
+                          rows="8"
+                        />
+                        <button className="btn-primary mt-10" onClick={handleDuzenlemeKaydet}>Kaydet</button>
+                      </>
+                    ) : (
+                      <div className="result-text">{gosterilecekMetin()}</div>
+                    )}
+                 </div>
+
+                 {!duzenlemeModu && (
+                    <div className="preview-actions">
+                      <button className="btn-action" onClick={handleKopyala}>
+                        {kopyalandi ? "✓ Kopyalandı" : "📄 Kopyala"}
+                      </button>
+                      <button className="btn-action" onClick={handleDuzenleToggle}>✏️ Düzenle</button>
+                      <button className="btn-action" onClick={handleGenerate}>🔄 Tekrar</button>
+                      <button className="btn-action" onClick={handleIndir}>📥 İndir</button>
+                    </div>
+                 )}
+               </>
+             )}
+          </div>
+        )}
       </div>
 
-      <div className="content-creator-grid">
-        <div className="creator-form-section">
+      {/* Alt Giriş Çubuğu (Input Area) */}
+      <div className="input-area-wrapper">
+         <div className="input-box">
+            
+            {/* Sol Taraf: + Butonu ve Açılır Menüler */}
+            <div className="menu-container" ref={menuRef}>
+               <button className="plus-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  <svg viewBox="0 0 24 24" className="plus-icon">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+               </button>
 
-          <div className="form-group">
-            <label>Kampanya <span className="required">*</span></label>
-            <select
-              className="filter-select"
-              value={selectedCampaign}
-              onChange={(e) => setSelectedCampaign(e.target.value)}
-            >
-              {campaigns.length === 0 && <option value="">Kampanya bulunamadı</option>}
-              {campaigns.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
+               {isMenuOpen && (
+                  <div className="options-popup">
 
-          <div className="form-group">
-            <label>1. İçerik Türü <span className="required">*</span></label>
-            <div className="type-cards">
-              <div className={`type-card ${icerikTuru === 'linkedin' ? 'active' : ''}`} onClick={() => setIcerikTuru('linkedin')}>
-                <div className="icon blue">in</div>
-                <span>LinkedIn Gönderisi</span>
-                {icerikTuru === 'linkedin' && <div className="check-mark">✓</div>}
-              </div>
-              <div className={`type-card ${icerikTuru === 'gorsel' ? 'active' : ''}`} onClick={() => setIcerikTuru('gorsel')}>
-                <div className="icon purple">🖼️</div>
-                <span>Görsel Oluşturucu</span>
-                {icerikTuru === 'gorsel' && <div className="check-mark">✓</div>}
-              </div>
-              <div className={`type-card ${icerikTuru === 'metin' ? 'active' : ''}`} onClick={() => setIcerikTuru('metin')}>
-                <div className="icon pink">✍️</div>
-                <span>Metin Düzenleyici</span>
-                {icerikTuru === 'metin' && <div className="check-mark">✓</div>}
-              </div>
-              <div className={`type-card ${icerikTuru === 'hashtag' ? 'active' : ''}`} onClick={() => setIcerikTuru('hashtag')}>
-                <div className="icon gray">#</div>
-                <span>Hashtag Üretici</span>
-                {icerikTuru === 'hashtag' && <div className="check-mark">✓</div>}
-              </div>
+                     <div className="option-item">
+                        <span>İçerik Türü</span>
+                        <svg viewBox="0 0 24 24" className="chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <div className="submenu">
+                           <div className={`submenu-item ${icerikTuru === 'linkedin' ? 'active' : ''}`} onClick={() => setIcerikTuru('linkedin')}>LinkedIn {icerikTuru === 'linkedin' && <span className="check-mark">✓</span>}</div>
+                           <div className={`submenu-item ${icerikTuru === 'gorsel' ? 'active' : ''}`} onClick={() => setIcerikTuru('gorsel')}>Görsel {icerikTuru === 'gorsel' && <span className="check-mark">✓</span>}</div>
+                           <div className={`submenu-item ${icerikTuru === 'metin' ? 'active' : ''}`} onClick={() => setIcerikTuru('metin')}>Metin {icerikTuru === 'metin' && <span className="check-mark">✓</span>}</div>
+                           <div className={`submenu-item ${icerikTuru === 'hashtag' ? 'active' : ''}`} onClick={() => setIcerikTuru('hashtag')}>Hashtag {icerikTuru === 'hashtag' && <span className="check-mark">✓</span>}</div>
+                        </div>
+                     </div>
+                     
+                     <div className="option-item">
+                        <span>Ton</span>
+                        <svg viewBox="0 0 24 24" className="chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <div className="submenu">
+                           {['profesyonel', 'samimi', 'kurumsal', 'eglenceli'].map(t => (
+                              <div key={t} className={`submenu-item ${ton === t ? 'active' : ''}`} onClick={() => setTon(t)}>
+                                 {t.charAt(0).toUpperCase() + t.slice(1)} {ton === t && <span className="check-mark">✓</span>}
+                              </div>
+                           ))}
+                        </div>
+                     </div>
+                     
+                     <div className="option-item">
+                        <span>Uzunluk</span>
+                        <svg viewBox="0 0 24 24" className="chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <div className="submenu">
+                           {[
+                             { id: 'kisa', label: 'Kısa' },
+                             { id: 'orta', label: 'Orta' },
+                             { id: 'uzun', label: 'Uzun' }
+                           ].map(u => (
+                              <div key={u.id} className={`submenu-item ${uzunluk === u.id ? 'active' : ''}`} onClick={() => setUzunluk(u.id)}>
+                                 {u.label} {uzunluk === u.id && <span className="check-mark">✓</span>}
+                              </div>
+                           ))}
+                        </div>
+                     </div>
+
+                  </div>
+               )}
             </div>
-          </div>
 
-          <div className="form-group">
-            <label>2. Konu <span className="required">*</span></label>
-            <textarea
-              placeholder="İçeriğinizin ana konusunu yazın..."
-              rows="3"
-              maxLength={150}
-              value={konu}
-              onChange={(e) => setKonu(e.target.value)}
+            {/* Orta Taraf: Metin Girdisi */}
+            <input 
+               type="text" 
+               className="main-input" 
+               placeholder="İçerik konunuzu buraya yazın..." 
+               value={konu}
+               onChange={(e) => setKonu(e.target.value)}
+               onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
             />
-            <div className="char-count">{konu.length}/150</div>
-          </div>
 
-          <div className="form-group">
-            <label>3. Ek Bilgi <span className="text-muted">(Opsiyonel)</span></label>
-            <textarea
-              placeholder="Eklemek istediğiniz detayları yazın..."
-              rows="4"
-              maxLength={300}
-              value={ekBilgi}
-              onChange={(e) => setEkBilgi(e.target.value)}
-            />
-            <div className="char-count">{ekBilgi.length}/300</div>
-          </div>
+            {/* Sağ Taraf: Gönderme Butonu */}
+            <button className="send-btn" onClick={handleGenerate} disabled={!konu.trim() || loading}>
+               <svg viewBox="0 0 24 24" className="send-icon">
+                 <line x1="22" y1="2" x2="11" y2="13"></line>
+                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+               </svg>
+            </button>
 
-          <div className="form-group">
-            <label>4. Ton</label>
-            <div className="button-group">
-              <button className={`btn-outline ${ton === 'profesyonel' ? 'active' : ''}`} onClick={() => setTon('profesyonel')}>💼 Profesyonel</button>
-              <button className={`btn-outline ${ton === 'samimi' ? 'active' : ''}`} onClick={() => setTon('samimi')}>😊 Samimi</button>
-              <button className={`btn-outline ${ton === 'kurumsal' ? 'active' : ''}`} onClick={() => setTon('kurumsal')}>🏢 Kurumsal</button>
-              <button className={`btn-outline ${ton === 'eglenceli' ? 'active' : ''}`} onClick={() => setTon('eglenceli')}>🎉 Eğlenceli</button>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>5. Uzunluk</label>
-            <div className="button-group">
-              <button className={`btn-outline ${uzunluk === 'kisa' ? 'active' : ''}`} onClick={() => setUzunluk('kisa')}>≡ Kısa</button>
-              <button className={`btn-outline ${uzunluk === 'orta' ? 'active' : ''}`} onClick={() => setUzunluk('orta')}>≡ Orta</button>
-              <button className={`btn-outline ${uzunluk === 'uzun' ? 'active' : ''}`} onClick={() => setUzunluk('uzun')}>≡ Uzun</button>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>6. Planlanan Tarih/Saat <span className="text-muted">(Opsiyonel)</span></label>
-            <input
-              type="datetime-local"
-              value={scheduledAt}
-              onChange={(e) => setScheduledAt(e.target.value)}
-            />
-          </div>
-
-          <button className="btn-primary w-100 generate-btn" onClick={handleGenerate} disabled={loading}>
-            {loading ? "Oluşturuluyor..." : "✨ İçeriği Oluştur"}
-          </button>
-          {error && <p className="error-text">{error}</p>}
-          <p className="hint-text">Oluşturulan içerikler marka rehberinize uygun şekilde hazırlanır.</p>
-        </div>
-
-        <div className="creator-preview-section">
-          <div className="preview-header">
-            <h3>✨ Oluşturulan İçerik</h3>
-            <span className="platform-badge linkedin">
-              {badgeLabel[icerikTuru].icon} {badgeLabel[icerikTuru].text}
-            </span>
-          </div>
-
-          <div className="preview-content">
-            {icerikTuru === 'gorsel' && (
-              <div className="info-alert" style={{ marginBottom: '12px' }}>
-                ⚠️ Bu ajan şu an sadece metin üretebiliyor, görsel oluşturma henüz desteklenmiyor. Aşağıda metin çıktısı gösteriliyor.
-              </div>
-            )}
-            {uretilenIcerik ? (
-              duzenlemeModu ? (
-                <>
-                  <textarea
-                    value={duzenlenmisMetin}
-                    onChange={(e) => setDuzenlenmisMetin(e.target.value)}
-                    rows="8"
-                    style={{ width: '100%' }}
-                  />
-                  <button className="btn-primary" style={{ marginTop: '8px' }} onClick={handleDuzenlemeKaydet}>
-                    Kaydet
-                  </button>
-                </>
-              ) : (
-                <p>{gosterilecekMetin() || "İşleniyor, birazdan hazır olacak..."}</p>
-              )
-            ) : (
-              <p className="text-muted">Henüz içerik oluşturulmadı.</p>
-            )}
-          </div>
-
-          {uretilenIcerik && !duzenlemeModu && (
-            <div className="preview-actions">
-              <button className="btn-action" onClick={handleKopyala}>
-                {kopyalandi ? "✓ Kopyalandı" : "📄 Kopyala"}
-              </button>
-              <button className="btn-action" onClick={handleDuzenleToggle}>✏️ Düzenle</button>
-              <button className="btn-action" onClick={handleGenerate}>🔄 Tekrar Oluştur</button>
-              <button className="btn-action" onClick={handleIndir}>📥 İndir</button>
-            </div>
-          )}
-        </div>
+         </div>
       </div>
     </div>
   );
