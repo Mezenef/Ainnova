@@ -50,6 +50,7 @@ class MarketingContentSerializer(serializers.ModelSerializer):
     campaign_detail = CampaignSerializer(source="campaign", read_only=True)
     platform_display = serializers.CharField(source="get_platform_display", read_only=True)
     content_type_display = serializers.CharField(source="get_content_type_display", read_only=True)
+    language_display = serializers.CharField(source="get_language_display", read_only=True)
     status_display = serializers.CharField(source="get_status_display", read_only=True)
 
     class Meta:
@@ -62,6 +63,8 @@ class MarketingContentSerializer(serializers.ModelSerializer):
             "platform_display",
             "content_type",
             "content_type_display",
+            "language",
+            "language_display",
             "status",
             "status_display",
             "topic",
@@ -74,6 +77,7 @@ class MarketingContentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
 
 
 class AgentCallbackSerializer(serializers.Serializer):

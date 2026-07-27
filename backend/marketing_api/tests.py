@@ -216,4 +216,32 @@ class AdvancedBackendEnhancementsTests(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(len(res.data) > 0)
 
+    @patch("marketing_api.views.GeminiClient")
+    def test_english_language_content_generation(self, mock_gemini_cls):
+        mock_client = MagicMock()
+        mock_gemini_cls.return_value = mock_client
+        mock_response = MagicMock()
+        mock_response.status = "completed"
+        mock_artifact = MagicMock()
+        mock_artifact.content.body = "English generated body text"
+        mock_artifact.content.cta = "Click here"
+        mock_artifact.content.hashtags = ["ai", "marketing"]
+        mock_response.artifacts = [mock_artifact]
+        mock_response.message = "Success"
+        mock_client.generate_content.return_value = mock_response
+
+        english_content = MarketingContent.objects.create(
+            campaign=self.campaign,
+            platform="LINKEDIN",
+            language="en",
+            topic="English Launch"
+        )
+        url = reverse("content-trigger-agent", kwargs={"pk": english_content.id})
+        res = self.client.post(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # Check that GeminiClient was called with language='en'
+        agent_req = mock_client.generate_content.call_args[0][0]
+        self.assertEqual(agent_req.language, "en")
+
+
 

@@ -93,10 +93,17 @@ class MarketingContent(SoftDeleteModel):
         ("PUBLISHED", "Yayınlandı"),
     ]
 
+    LANGUAGE_CHOICES = [
+        ("tr", "Türkçe"),
+        ("en", "İngilizce"),
+    ]
+
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="contents", verbose_name="Kampanya")
     platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES, verbose_name="Platform")
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES, default="TEXT", verbose_name="İçerik Tipi")
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default="tr", verbose_name="Dil")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING", verbose_name="Durum")
+
 
     topic = models.CharField(max_length=255, blank=True, null=True, verbose_name="Konu")
     extra_info = models.TextField(blank=True, null=True, verbose_name="Ek Bilgi")

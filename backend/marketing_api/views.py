@@ -222,7 +222,7 @@ class MarketingContentViewSet(viewsets.ModelViewSet):
             vertical=content.campaign.brand.vertical,
             brief=brief,
             platform=platform_map.get(content.platform, "blog"),
-            language="tr",
+            language=content.language or "tr",
             tone=content.tone or "professional",
             target_audience=content.campaign.brand.target_audience,
         )
