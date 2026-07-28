@@ -38,6 +38,14 @@
   width: 250px;
 }
 
+.search-icon-svg {
+  width: 16px;
+  height: 16px;
+  stroke: #888;
+  stroke-width: 2;
+  fill: none;
+}
+
 .search-box input {
   border: none;
   outline: none;
@@ -111,15 +119,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 18px;
+}
+
+.doc-icon-svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Dinamik Renk Sınıfları */
+.icon-box.gray { background: #f0f0f0; color: #1a1a1a; }
 .icon-box.blue { background: #e6f0ff; color: #0a66c2; }
 .icon-box.orange { background: #fff0e6; color: #f26d21; }
 .icon-box.pink { background: #faebf0; color: #d66685; }
-.icon-box.black { background: #f0f0f0; color: #1a1a1a; }
 .icon-box.yellow { background: #fff8e6; color: #f2b821; }
 .icon-box.purple { background: #f3ebff; color: #6b66d6; }
 
@@ -145,12 +161,7 @@
   font-size: 13px;
   font-weight: 500;
 }
-.type-badge.blue { color: #0a66c2; }
-.type-badge.orange { color: #f26d21; }
-.type-badge.pink { color: #d66685; }
-.type-badge.black { color: #1a1a1a; }
-.type-badge.yellow { color: #d99e00; }
-.type-badge.purple { color: #6b66d6; }
+.type-badge.gray { color: #555; }
 
 .date-col {
   color: #555;
@@ -164,19 +175,24 @@
   padding: 6px 12px;
   border-radius: 20px;
 }
-.status-badge.gray { background: #f4f5fa; color: #6b66d6; } /* Taslak */
-.status-badge.green { background: #ebfaef; color: #2ea05b; } /* Yayınlandı / Tamamlandı */
-.status-badge.blue { background: #e6f0ff; color: #0a66c2; } /* Hazır */
+.status-badge.gray { background: #f4f5fa; color: #6b66d6; }
+.status-badge.green { background: #ebfaef; color: #2ea05b; }
+.status-badge.blue { background: #e6f0ff; color: #0a66c2; }
+.status-badge.red { background: #faebf0; color: #d66685; }
 
-/* İşlemler Sütunu */
+/* İşlemler Sütunu & Açılır Menü */
 .actions-col {
-  display: flex;
-  gap: 8px;
+  position: relative;
+}
+
+.action-menu-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .action-btn {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 6px;
   width: 32px;
   height: 32px;
@@ -185,10 +201,71 @@
   justify-content: center;
   cursor: pointer;
   color: #666;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
-.action-btn:hover { background: #f4f5fa; }
+.action-btn:hover { 
+  background: #f4f5fa; 
+  border-color: #e0e0e0;
+}
+
+.dots-icon-svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+.action-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  width: 180px;
+  z-index: 100;
+  padding: 8px 0;
+  margin-top: 4px;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background: #f4f5fa;
+  color: #4a47a3;
+}
+
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dropdown-item.delete:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
 
 /* Sayfalama */
 .pagination {

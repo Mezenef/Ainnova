@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Gecmis.css';
 import api from "../api/axios";
@@ -12,6 +12,10 @@ const Gecmis = () => {
   const [aramaMetni, setAramaMetni] = useState('');
   const [turFiltre, setTurFiltre] = useState('hepsi');
   const [siralama, setSiralama] = useState('yeni');
+  
+  // Hangi satırın menüsünün açık olduğunu takip eden state
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     const getContents = async () => {
@@ -28,15 +32,41 @@ const Gecmis = () => {
     getContents();
   }, []);
 
+  // Menü dışında bir yere tıklanınca açık menüyü kapat
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleSil = async (id) => {
     if (!window.confirm("Bu içeriği silmek istediğinize emin misiniz?")) return;
     try {
       await api.delete(`contents/${id}/`);
       setTableData((prev) => prev.filter((item) => item.id !== id));
+      setActiveMenuId(null); // Menüyü kapat
     } catch (err) {
       console.error("Silme başarısız:", err);
       alert("İçerik silinemedi.");
     }
+  };
+
+  const handleGoruntule = (id) => {
+    navigate(`/sonuclar/${id}`);
+  };
+
+  const handleDuzenle = (row) => {
+    // İçeriği İçerik Üret sayfasına state olarak gönderiyoruz
+    navigate('/uret', { 
+      state: { 
+        editMode: true, 
+        contentData: row 
+      } 
+    });
   };
 
   const statusColorMap = {
@@ -75,7 +105,7 @@ const Gecmis = () => {
         </div>
         <div className="history-filters">
           <div className="search-box">
-            <span>🔍</span>
+            <svg viewBox="0 0 24 24" className="search-icon-svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input
               type="text"
               placeholder="Geçmişte ara..."
@@ -99,7 +129,7 @@ const Gecmis = () => {
       <div className="history-card">
         <h3 className="card-title">Son Oluşturulanlar</h3>
 
-        <div className="table-responsive">
+        <div className="table-responsive" ref={menuRef}>
           {loading ? (
             <p>Yükleniyor...</p>
           ) : error ? (
@@ -121,7 +151,9 @@ const Gecmis = () => {
                 {filtrelenmisVeri.map((row) => (
                   <tr key={row.id}>
                     <td className="content-col">
-                      <div className="icon-box gray">📄</div>
+                      <div className="icon-box gray">
+                        <svg viewBox="0 0 24 24" className="doc-icon-svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                      </div>
                       <div className="content-info">
                         <span className="content-title">
                           {row.topic || row.generated_text?.slice(0, 40) || 'İşleniyor...'}
@@ -138,9 +170,35 @@ const Gecmis = () => {
                         {row.status_display}
                       </span>
                     </td>
+                    
+                    {/* İşlemler Sütunu: Üç Nokta Menüsü */}
                     <td className="actions-col">
-                      <button className="action-btn" onClick={() => navigate(`/sonuclar/${row.id}`)}>👁️</button>
-                      <button className="action-btn" onClick={() => handleSil(row.id)}>⋮</button>
+                      <div className="action-menu-wrapper">
+                        <button 
+                          className="action-btn" 
+                          onClick={() => setActiveMenuId(activeMenuId === row.id ? null : row.id)}
+                        >
+                          <svg viewBox="0 0 24 24" className="dots-icon-svg"><circle cx="12" cy="12" r="2"></circle><circle cx="12" cy="5" r="2"></circle><circle cx="12" cy="19" r="2"></circle></svg>
+                        </button>
+
+                        {/* Açılır Menü */}
+                        {activeMenuId === row.id && (
+                          <div className="action-dropdown-menu">
+                            <button className="dropdown-item" onClick={() => handleGoruntule(row.id)}>
+                              <svg viewBox="0 0 24 24" className="dropdown-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                              Görüntüle
+                            </button>
+                            <button className="dropdown-item" onClick={() => handleDuzenle(row)}>
+                              <svg viewBox="0 0 24 24" className="dropdown-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                              Değişiklik Yap
+                            </button>
+                            <button className="dropdown-item delete" onClick={() => handleSil(row.id)}>
+                              <svg viewBox="0 0 24 24" className="dropdown-icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                              Sil
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
