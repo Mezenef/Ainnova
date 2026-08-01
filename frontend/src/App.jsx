@@ -15,6 +15,8 @@ import Takvim from './pages/Takvim';
 import Gecmis from './pages/Gecmis';
 import Ayarlar from './pages/Ayarlar';
 import Yardim from './pages/Yardim';
+import SifremiUnuttum from './pages/SifremiUnuttum';
+import SifreSifirla from './pages/SifreSifirla';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/kayit" element={<Kayit />} />
           <Route path="/dogrulama" element={<Dogrulama />} />
+          <Route path="/sifremi-unuttum" element={<SifremiUnuttum />} />
+          <Route path="/sifre-sifirla" element={<SifreSifirla />} />
           <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
           <Route path="/uret" element={<MainLayout><IcerikUret /></MainLayout>} />
           <Route path="/sonuclar/:id" element={<MainLayout><Sonuclar /></MainLayout>} />

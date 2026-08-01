@@ -21,75 +21,24 @@ const Login = () => {
 
 
   const handleSubmit = async (e) => {
-
-    e.preventDefault();
-
-    setHata(null);
-
-
-    try {
-
-
-      const response = await api.post(
-        "token/",
-        {
-          username: email,
-          password: password
-        }
-      );
-
-
-
-      const storage = rememberMe
-        ? localStorage
-        : sessionStorage;
-
-
-
-      storage.setItem(
-        "access",
-        response.data.access
-      );
-
-
-      storage.setItem(
-        "refresh",
-        response.data.refresh
-      );
-
-
-
-      /*
-        ThemeContext'e haber gönderiyoruz.
-        Kullanıcı değiştiğinde yeni kullanıcının
-        tema ayarlarını tekrar çekecek.
-      */
-      window.dispatchEvent(
-        new Event("storage")
-      );
-
-
-
-      navigate('/dashboard');
-
-
-
-    } catch(error) {
-
-
-      console.log(
-        "Login hatası:",
-        error.response?.data
-      );
-
-
-      setHata(
-        "E-posta veya şifre hatalı!"
-      );
-
+  e.preventDefault();
+  setHata(null);
+  try {
+    const response = await api.post("token/", { username: email, password: password });
+    if (response.data.totp_required) {
+      // 2FA aktifse doğrulama sayfasına yönlendir (şimdilik pre_auth_token'ı geçici sakla)
+      sessionStorage.setItem("pre_auth_token", response.data.pre_auth_token);
+      navigate('/dogrulama');
+      return;
     }
-
-  };
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem("access", response.data.access);
+    storage.setItem("refresh", response.data.refresh);
+    navigate('/dashboard');
+  } catch (error) {
+    setHata("E-posta veya şifre hatalı!");
+  }
+};
 
 
 

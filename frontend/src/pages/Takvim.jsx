@@ -27,7 +27,7 @@ const Takvim = () => {
     const getContents = async () => {
       try {
         const response = await api.get("contents/");
-        setContents(response.data.filter((c) => c.scheduled_at));
+        setContents((response.data.results || response.data).filter((c) => c.scheduled_at));
       } catch (err) {
         console.error("Takvim verisi alınamadı:", err);
       } finally {

@@ -41,8 +41,8 @@ const Dashboard = () => {
         ]);
         const adSoyad = `${meRes.data.first_name || ''} ${meRes.data.last_name || ''}`.trim();
         setUsername(adSoyad || meRes.data.username);
-        setContents(contentsRes.data);
-        setBrands(brandsRes.data);
+        setContents(contentsRes.data.results || contentsRes.data);
+setBrands(brandsRes.data.results || brandsRes.data);
       } catch (err) {
         console.error("Dashboard verisi alınamadı:", err);
       } finally {

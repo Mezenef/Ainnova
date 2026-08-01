@@ -1,8 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
-class BrandProfile(models.Model):
+
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False, verbose_name="Silindi mi?")
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name="Silinme Tarihi")
+
+    class Meta:
+        abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save(using=using)
+
+    def restore(self):
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save()
+
+
+class BrandProfile(SoftDeleteModel):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="brands", null=True, blank=True, verbose_name="Sahip Kullanıcı")
     name = models.CharField(max_length=255, verbose_name="Marka Adı")
     vertical = models.CharField(max_length=100, verbose_name="Dikey/Sektör", help_text="Örn: Ai-Juris, Ai-Health")
@@ -21,7 +41,7 @@ class BrandProfile(models.Model):
         return f"{self.name} ({self.vertical})"
 
 
-class Campaign(models.Model):
+class Campaign(SoftDeleteModel):
     STATUS_CHOICES = [
         ("DRAFT", "Taslak"),
         ("ACTIVE", "Aktif"),
@@ -47,7 +67,7 @@ class Campaign(models.Model):
         return f"{self.name} - {self.brand.name}"
 
 
-class MarketingContent(models.Model):
+class MarketingContent(SoftDeleteModel):
     PLATFORM_CHOICES = [
         ("LINKEDIN", "LinkedIn"),
         ("X", "X (Twitter)"),
@@ -73,10 +93,17 @@ class MarketingContent(models.Model):
         ("PUBLISHED", "Yayınlandı"),
     ]
 
+    LANGUAGE_CHOICES = [
+        ("tr", "Türkçe"),
+        ("en", "İngilizce"),
+    ]
+
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="contents", verbose_name="Kampanya")
     platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES, verbose_name="Platform")
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES, default="TEXT", verbose_name="İçerik Tipi")
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default="tr", verbose_name="Dil")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING", verbose_name="Durum")
+
 
     topic = models.CharField(max_length=255, blank=True, null=True, verbose_name="Konu")
     extra_info = models.TextField(blank=True, null=True, verbose_name="Ek Bilgi")
@@ -118,3 +145,33 @@ class NotificationPreference(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - Bildirim Tercihleri"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    totp_secret = models.CharField(max_length=64, blank=True, null=True, verbose_name="TOTP Secret Anahtarı")
+    is_totp_enabled = models.BooleanField(default=False, verbose_name="2FA Aktif mi?")
+    backup_codes = models.JSONField(default=list, blank=True, verbose_name="Yedek Kodlar")
+
+    class Meta:
+        verbose_name = "Kullanıcı Profili"
+        verbose_name_plural = "Kullanıcı Profilleri"
+
+    def __str__(self):
+        return f"{self.user.username} - Profil (2FA: {'Aktif' if self.is_totp_enabled else 'Pasif'})"
+
+
+class ActivityLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="activity_logs", verbose_name="Kullanıcı")
+    action = models.CharField(max_length=255, verbose_name="Eylem")
+    details = models.TextField(blank=True, null=True, verbose_name="Detaylar")
+    ip_address = models.GenericIPAddressField(blank=True, null=True, verbose_name="IP Adresi")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih")
+
+    class Meta:
+        verbose_name = "İşlem Logu"
+        verbose_name_plural = "İşlem Logları"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.action} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"
