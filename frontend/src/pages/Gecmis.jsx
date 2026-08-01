@@ -12,9 +12,12 @@ const Gecmis = () => {
   const [aramaMetni, setAramaMetni] = useState('');
   const [turFiltre, setTurFiltre] = useState('hepsi');
   const [siralama, setSiralama] = useState('yeni');
-
+  
+  // Hangi satırın menüsünün açık olduğunu takip eden state
   const [activeMenuId, setActiveMenuId] = useState(null);
   const menuRef = useRef(null);
+
+  
 
   useEffect(() => {
     const getContents = async () => {

@@ -61,7 +61,7 @@ const IcerikUret = () => {
   const [duzenlemeModu, setDuzenlemeModu] = useState(false);
   const [duzenlenmisMetin, setDuzenlenmisMetin] = useState('');
   const [kopyalandi, setKopyalandi] = useState(false);
-
+  
   const menuRef = useRef(null);
 
   // Kampanyaları Getir (Arka planda otomatik ilkini seçer, menüde gösterilmez)
@@ -104,7 +104,6 @@ const IcerikUret = () => {
       setError("Arka planda kullanılabilecek aktif bir kampanya bulunamadı.");
       return;
     }
-
     setLoading(true);
     setError(null);
     setDuzenlemeModu(false);
@@ -203,7 +202,6 @@ const IcerikUret = () => {
 
   return (
     <div className="icerik-uret-container">
-
       {/* Ana Ekran / Sonuç Ekranı */}
       <div className="icerik-main">
         {!uretilenIcerik && !loading ? (
@@ -315,7 +313,6 @@ const IcerikUret = () => {
                            ))}
                         </div>
                      </div>
-
                      <div className="option-item">
                         <span>Uzunluk</span>
                         <svg viewBox="0 0 24 24" className="chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>

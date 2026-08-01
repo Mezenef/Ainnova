@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
+<<<<<<< HEAD
 from django.conf import settings
 from django.conf.urls.static import static
+=======
+>>>>>>> origin/main
 from rest_framework_simplejwt.views import TokenRefreshView
 from marketing_api.views import CustomTokenObtainPairView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView

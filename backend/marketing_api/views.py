@@ -115,6 +115,7 @@ class MarketingContentViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "scheduled_at"]
 
     def get_queryset(self):
+        # Otomatik Kurtarma: 5 dakikadan uzun süre GENERATING durumunda kalan içerikleri FAILED yap
         stuck_threshold = timezone.now() - timedelta(minutes=5)
         MarketingContent.objects.filter(
             campaign__brand__owner=self.request.user,
@@ -162,7 +163,7 @@ class MarketingContentViewSet(viewsets.ModelViewSet):
         response = HttpResponse(content_type="text/csv; charset=utf-8")
         response["Content-Disposition"] = 'attachment; filename="ainnova_icerik_takvimi.csv"'
 
-        response.write('\ufeff')
+        response.write('\ufeff')  # UTF-8 BOM for Excel compatibility
         writer = csv.writer(response)
         writer.writerow(["ID", "Kampanya", "Platform", "İçerik Tipi", "Konu", "Durum", "Planlanan Tarih", "Üretilen Metin"])
 
@@ -290,6 +291,7 @@ class MarketingContentViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_200_OK
         )
+
 
 
 class AgentCallbackAPIView(views.APIView):
